@@ -238,6 +238,23 @@ function confirmPayment(){
 
 }
 
+  const method = document.getElementById("paymentMethod").value;
+
+  if(!method){
+    alert("اختر طريقة الدفع أولاً");
+    return;
+  }
+
+  if(method === "baridimob"){
+    alert("تم اختيار BaridiMob / CCP. أرسل وصل الدفع لإتمام الطلب.");
+  }
+
+  if(method === "cib"){
+    alert("تم اختيار CIB / Edahabia. سيتم ربط بوابة الدفع لاحقاً.");
+  }
+
+}
+
 
 function closeModal(){
   document.getElementById("modal").classList.remove("open");
