@@ -89,7 +89,7 @@ function add(id){cart.push(products.find(p=>p.id===id));updateCart()}
 function updateCart(){document.getElementById("cartCount").textContent=cart.length;document.getElementById("cart").classList.toggle("show",cart.length>0)}
 function openCart(){
  const total=cart.length?cart.map(p=>p.price).join(" + "):"0 دج";
- document.getElementById("sheet").innerHTML=`<h3>🛒 سلة المشتريات</h3>${cart.map((p,i)=>`<div class="row"><span>${p.icon} ${p.name}</span><button class="iconbtn" onclick="cart.splice(${i},1);openCart();updateCart()">حذف</button></div>`).join("")}<p style="color:#9fb0c5">الإجمالي: ${total}</p><button class="buy" style="width:100%;padding:13px;border:0;border-radius:12px;background:#19a7ff;font-weight:800" onclick="alert('سيتم ربط الدفع وتسليم الملفات تلقائياً في المرحلة التالية.')">متابعة الدفع</button><button class="close" onclick="closeModal()">إغلاق</button>`;
+ document.getElementById("sheet").innerHTML=`<h3>🛒 سلة المشتريات</h3>${cart.map((p,i)=>`<div class="row"><span>${p.icon} ${p.name}</span><button class="iconbtn" onclick="cart.splice(${i},1);openCart();updateCart()">حذف</button></div>`).join("")}<p style="color:#9fb0c5">الإجمالي: ${total}</p><button class="buy" style="width:100%;padding:13px;border:0;border-radius:12px;background:#19a7ff;font-weight:800" onclick="openPayment()">متابعة الدفع</button><button class="close" onclick="closeModal()">إغلاق</button>`;
  document.getElementById("modal").classList.add("open");
 }
 function openAccount(){
