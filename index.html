@@ -92,19 +92,50 @@ function openCart(){
  document.getElementById("sheet").innerHTML=`<h3>🛒 سلة المشتريات</h3>${cart.map((p,i)=>`<div class="row"><span>${p.icon} ${p.name}</span><button class="iconbtn" onclick="cart.splice(${i},1);openCart();updateCart()">حذف</button></div>`).join("")}<p style="color:#9fb0c5">الإجمالي: ${total}</p><button class="buy" style="width:100%;padding:13px;border:0;border-radius:12px;background:#19a7ff;font-weight:800" onclick="openPayment()">متابعة الدفع</button><button class="close" onclick="closeModal()">إغلاق</button>`;
  document.getElementById("modal").classList.add("open");
 }
-function openAccount(){
- document.getElementById("sheet").innerHTML=`<h3>👤 حسابي</h3><div class="row"><span>🧾 مشترياتي</span><span>قريباً</span></div><div class="row"><span>💬 الدعم</span><span>متاح</span></div><div class="row"><span>📜 الشروط والأحكام</span><span>عرض</span></div><button class="close" onclick="closeModal()">إغلاق</button>`;
- document.getElementById("modal").classList.add("open");
+ function openAccount(){
+  document.getElementById("sheet").innerHTML = `
+    <h3>👤 حسابي</h3>
+
+    <div class="row">
+      <span>🛍️ مشترياتي</span>
+      <span>قريباً</span>
+    </div>
+
+    <div class="row">
+      <span>💬 الدعم</span>
+      <span>متاح</span>
+    </div>
+
+    <div class="row">
+      <span>📜 الشروط والأحكام</span>
+      <span>عرض</span>
+    </div>
+
+    <button class="close" onclick="closeModal()">إغلاق</button>
+  `;
+
+  document.getElementById("modal").classList.add("open");
+}
+
+
 function openPayment(){
-  const total = cart.length
-    ? cart.reduce((s,p)=>s+p.price,0)
-    : 0;
+
+  if(cart.length === 0){
+    alert("السلة فارغة");
+    return;
+  }
+
+  const total = cart.reduce((s,p)=>{
+    return s + parseInt(p.price);
+  },0);
 
   document.getElementById("sheet").innerHTML = `
     <h3>💳 إتمام الدفع</h3>
 
     <div style="padding:15px">
+
       <h4>المبلغ الإجمالي</h4>
+
       <div style="font-size:28px;font-weight:bold;margin:10px 0">
         ${total} دج
       </div>
@@ -113,9 +144,17 @@ function openPayment(){
 
       <select id="paymentMethod"
         style="width:100%;padding:14px;margin:12px 0;border-radius:10px">
+
         <option value="">-- اختر طريقة الدفع --</option>
-        <option value="baridimob">🟢 BaridiMob / CCP</option>
-        <option value="cib">🔵 CIB / Edahabia</option>
+
+        <option value="baridimob">
+          🟢 BaridiMob / CCP
+        </option>
+
+        <option value="cib">
+          🔵 CIB / Edahabia
+        </option>
+
       </select>
 
       <div id="paymentInfo"></div>
@@ -126,43 +165,63 @@ function openPayment(){
         تأكيد الطلب
       </button>
 
-      <button onclick="closeModal()"
+      <button
+        onclick="closeModal()"
         style="width:100%;padding:15px;margin-top:10px">
         إغلاق
       </button>
+
     </div>
   `;
 
   document.getElementById("paymentMethod").onchange = function(){
+
     const info = document.getElementById("paymentInfo");
 
     if(this.value === "baridimob"){
+
       info.innerHTML = `
         <div style="padding:15px;background:#10243a;border-radius:12px">
+
           <h4>🟢 BaridiMob / CCP</h4>
+
           <p>قم بتحويل المبلغ إلى حساب المتجر.</p>
+
           <p><b>CCP:</b> ضع رقم حسابك هنا</p>
+
           <p><b>RIP:</b> ضع RIP هنا</p>
+
           <p>بعد التحويل، احتفظ بصورة وصل الدفع.</p>
+
         </div>
       `;
     }
 
     if(this.value === "cib"){
+
       info.innerHTML = `
         <div style="padding:15px;background:#10243a;border-radius:12px">
+
           <h4>🔵 CIB / Edahabia</h4>
-          <p>سيتم توجيهك إلى صفحة الدفع الآمنة عند ربط بوابة الدفع.</p>
-          <p>حالياً يمكنك اختيار هذه الطريقة وإرسال الطلب.</p>
+
+          <p>
+            سيتم توجيهك إلى صفحة الدفع الآمنة
+            عند ربط بوابة الدفع.
+          </p>
+
+          <p>
+            حالياً يمكنك اختيار هذه الطريقة وإرسال الطلب.
+          </p>
+
         </div>
       `;
     }
   };
-
-  document.getElementById("modal").classList.add("show");
 }
 
+
 function confirmPayment(){
+
   const method = document.getElementById("paymentMethod").value;
 
   if(!method){
@@ -177,9 +236,13 @@ function confirmPayment(){
   if(method === "cib"){
     alert("تم اختيار CIB / Edahabia. سيتم ربط بوابة الدفع لاحقاً.");
   }
-  }
-function closeModal(){document.getElementById("modal").classList.remove("open")}
-render();
-</script>
-</body>
-</html>
+
+}
+
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("open");
+}
+
+
+render();       
