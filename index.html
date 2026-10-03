@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BM Store</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#07111f;--card:#0d1b2d;--card2:#10243a;--text:#f5f8ff;--muted:#9fb0c5;--accent:#19a7ff;--line:#1c334b}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#06101d,#091827 55%,#07111f);color:var(--text);font-family:Arial,"Noto Sans Arabic",sans-serif}
+.app{max-width:1050px;margin:auto;padding:18px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#122b45,#0b78b9);display:grid;place-items:center;font-weight:900;font-size:18px;box-shadow:0 0 25px #0b8cff44}.brand h1{font-size:21px;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.iconbtn{border:1px solid var(--line);background:var(--card);color:#fff;border-radius:13px;padding:11px 13px;cursor:pointer}
+.hero{background:linear-gradient(135deg,#0e2942,#0b1b2e);border:1px solid #1a4263;border-radius:24px;padding:24px;margin-bottom:18px;box-shadow:0 15px 45px #0003}
+.hero h2{margin:0 0 8px;font-size:29px}.hero p{margin:0;color:#b7c6d8;line-height:1.7}.hero .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.chip{background:#0a1523;border:1px solid #23435d;padding:7px 11px;border-radius:999px;font-size:12px;color:#d7e8f8}
+.search{display:flex;gap:9px;margin:16px 0}.search input{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;color:#fff;outline:none}.search button{background:var(--accent);border:0;border-radius:14px;padding:0 17px;font-weight:700}
+.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:17px}.tab{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:#b9c8d9;border-radius:12px;padding:9px 13px;cursor:pointer}.tab.active{background:#0b78b9;color:#fff;border-color:#179de5}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:16px 0 11px}.section-title h3{margin:0}.section-title span{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}.product{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}.cover{height:135px;background:linear-gradient(135deg,#153c5b,#0b2237);display:grid;place-items:center;font-size:35px}.info{padding:14px}.tag{display:inline-block;font-size:10px;color:#8fd7ff;background:#0b2b43;padding:5px 8px;border-radius:999px;margin-bottom:8px}.product h4{margin:0 0 6px;font-size:16px}.product p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.6;min-height:38px}.buy{display:flex;align-items:center;justify-content:space-between;gap:8px}.price{font-weight:800}.buy button{border:0;background:#19a7ff;color:#04101b;padding:9px 12px;border-radius:10px;font-weight:800;cursor:pointer}
+.footer{margin:26px 0 8px;text-align:center;color:#72869d;font-size:11px}
+.cart{position:fixed;left:18px;bottom:18px;background:#19a7ff;color:#04101b;border:0;border-radius:16px;padding:13px 16px;font-weight:900;box-shadow:0 10px 30px #0005;cursor:pointer;display:none}.cart.show{display:block}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;justify-content:center;padding:12px}.modal.open{display:flex}.sheet{width:min(650px,100%);background:#0a1828;border:1px solid var(--line);border-radius:22px 22px 12px 12px;padding:18px}.sheet h3{margin-top:0}.row{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.close{width:100%;margin-top:14px;padding:13px;border:0;border-radius:12px;background:#17304a;color:#fff}
+@media(max-width:600px){.app{padding:13px}.hero{padding:19px}.hero h2{font-size:24px}.grid{grid-template-columns:1fr 1fr}.cover{height:110px}.product p{min-height:auto}} 
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand"><div class="logo">BM</div><div><h1>BM Store</h1><p>منتجات رقمية جاهزة</p></div></div>
+    <button class="iconbtn" onclick="openAccount()">👤 حسابي</button>
+  </header>
+
+  <section class="hero">
+    <h2>كل ما تحتاجه في مكان واحد</h2>
+    <p>كتب إلكترونية، ملفات، قوالب وأدوات رقمية للدراسة والعمل وتطوير الذات.</p>
+    <div class="chips"><span class="chip">⚡ تسليم سريع</span><span class="chip">🔒 دفع آمن</span><span class="chip">📥 تحميل فوري</span></div>
+  </section>
+
+  <div class="search"><input id="search" placeholder="ابحث عن منتج..." oninput="render()"><button onclick="render()">بحث</button></div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="section-title"><h3>المنتجات</h3><span id="count"></span></div>
+  <main class="grid" id="products"></main>
+
+  <div class="footer">BM Store • منتجات رقمية جاهزة</div>
+</div>
+
+<button class="cart" id="cart" onclick="openCart()">🛒 السلة (<span id="cartCount">0</span>)</button>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if(tg){tg.ready(); tg.expand();}
+
+const products=[
+ {id:1,name:"مغامرة الحروف العربية",cat:"كتب",price:"500 دج",icon:"📚",desc:"كتاب أطفال تفاعلي لتعلم الحروف العربية بطريقة ممتعة."},
+ {id:2,name:"حزمة الطالب الجامعي",cat:"دراسة",price:"700 دج",icon:"🎓",desc:"منظم دراسة وقوالب مراجعة ومخططات جاهزة للطباعة."},
+ {id:3,name:"قوالب Instagram جاهزة",cat:"قوالب",price:"900 دج",icon:"🎨",desc:"مجموعة قوالب احترافية قابلة للتعديل للمحتوى الرقمي."},
+ {id:4,name:"Planner أسبوعي",cat:"تنظيم",price:"400 دج",icon:"🗓️",desc:"مخطط أسبوعي رقمي لتنظيم الوقت والمهام."},
+ {id:5,name:"حزمة CV احترافية",cat:"عمل",price:"800 دج",icon:"💼",desc:"نماذج سيرة ذاتية ورسائل تقديم قابلة للتعديل."},
+ {id:6,name:"دليل بدء مشروع رقمي",cat:"عمل",price:"1200 دج",icon:"🚀",desc:"دليل عملي لبناء منتج رقمي ومتجر إلكتروني."}
+];
+let category="الكل", cart=[];
+
+function cats(){return ["الكل",...new Set(products.map(p=>p.cat))]}
+function renderTabs(){
+ document.getElementById("tabs").innerHTML=cats().map(c=>`<button class="tab ${c===category?'active':''}" onclick="category='${c}';render()">${c}</button>`).join("");
+}
+function render(){
+ renderTabs();
+ const q=document.getElementById("search").value.trim().toLowerCase();
+ const list=products.filter(p=>(category==="الكل"||p.cat===category)&&(!q||(`${p.name} ${p.desc} ${p.cat}`).toLowerCase().includes(q)));
+ document.getElementById("count").textContent=`${list.length} منتج`;
+ document.getElementById("products").innerHTML=list.map(p=>`
+ <article class="product">
+  <div class="cover">${p.icon}</div>
+  <div class="info"><span class="tag">${p.cat}</span><h4>${p.name}</h4><p>${p.desc}</p>
+   <div class="buy"><span class="price">${p.price}</span><button onclick="add(${p.id})">أضف للسلة</button></div>
+  </div>
+ </article>`).join("");
+ updateCart();
+}
+function add(id){cart.push(products.find(p=>p.id===id));updateCart()}
+function updateCart(){document.getElementById("cartCount").textContent=cart.length;document.getElementById("cart").classList.toggle("show",cart.length>0)}
+function openCart(){
+ const total=cart.length?cart.map(p=>p.price).join(" + "):"0 دج";
+ document.getElementById("sheet").innerHTML=`<h3>🛒 سلة المشتريات</h3>${cart.map((p,i)=>`<div class="row"><span>${p.icon} ${p.name}</span><button class="iconbtn" onclick="cart.splice(${i},1);openCart();updateCart()">حذف</button></div>`).join("")}<p style="color:#9fb0c5">الإجمالي: ${total}</p><button class="buy" style="width:100%;padding:13px;border:0;border-radius:12px;background:#19a7ff;font-weight:800" onclick="alert('سيتم ربط الدفع وتسليم الملفات تلقائياً في المرحلة التالية.')">متابعة الدفع</button><button class="close" onclick="closeModal()">إغلاق</button>`;
+ document.getElementById("modal").classList.add("open");
+}
+function openAccount(){
+ document.getElementById("sheet").innerHTML=`<h3>👤 حسابي</h3><div class="row"><span>🧾 مشترياتي</span><span>قريباً</span></div><div class="row"><span>💬 الدعم</span><span>متاح</span></div><div class="row"><span>📜 الشروط والأحكام</span><span>عرض</span></div><button class="close" onclick="closeModal()">إغلاق</button>`;
+ document.getElementById("modal").classList.add("open");
+}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+render();
+</script>
+</body>
+</html>
